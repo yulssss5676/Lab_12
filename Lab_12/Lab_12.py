@@ -1,106 +1,53 @@
 
 import json
 
-# Створення об'єкта JSON 
-cars_data = [
-    {"model": "Car A", "price": 10000, "age": 8},
-    {"model": "Car B", "price": 15000, "age": 5},
-    {"model": "Car C", "price": 20000, "age": 7},
-    {"model": "Car D", "price": 12000, "age": 10},
-    {"model": "Car E", "price": 17000, "age": 3},
-    {"model": "Car F", "price": 25000, "age": 12},
-    {"model": "Car G", "price": 30000, "age": 6},
-    {"model": "Car H", "price": 18000, "age": 9},
-    {"model": "Car I", "price": 22000, "age": 15},
-    {"model": "Car J", "price": 13000, "age": 2}
+# Р”Р°РЅС– РїСЂРѕ Р°РІС‚РѕРјРѕР±С–Р»С–
+cars = [
+    {"model": "Ford Fiesta", "age": 5, "price": 5000},
+    {"model": "Toyota Corolla", "age": 8, "price": 8000},
+    {"model": "Honda Civic", "age": 10, "price": 7500},
+    {"model": "BMW 3 Series", "age": 3, "price": 15000},
+    {"model": "Audi A4", "age": 7, "price": 12000},
+    {"model": "Mercedes-Benz C-Class", "age": 9, "price": 20000},
+    {"model": "Volkswagen Golf", "age": 4, "price": 7000},
+    {"model": "Hyundai Elantra", "age": 11, "price": 6500},
+    {"model": "Kia Rio", "age": 6, "price": 6200},
+    {"model": "Nissan Sentra", "age": 12, "price": 5800}
 ]
 
-# Збереження даних у файл JSON
-with open('cars_data.json', 'w') as file:
-    json.dump(cars_data, file, indent=4)
+# Р—Р°РїРёСЃ РґР°РЅРёС… Сѓ JSON С„Р°Р№Р»
+with open("cars.json", "w", encoding="utf-8") as file:
+    json.dump(cars, file, ensure_ascii=False, indent=4)
 
+def calculate_average_price(cars):
+    # Р¤С–Р»СЊС‚СЂР°С†С–СЏ Р°РІС‚РѕРјРѕР±С–Р»С–РІ, РІС–Рє СЏРєРёС… РїРµСЂРµРІРёС‰СѓС” 6 СЂРѕРєС–РІ
+    filtered_cars = [car for car in cars if car['age'] > 6]
+    
+    # РЇРєС‰Рѕ РЅРµРјР°С” Р°РІС‚РѕРјРѕР±С–Р»С–РІ, С‰Рѕ РІС–РґРїРѕРІС–РґР°СЋС‚СЊ РєСЂРёС‚РµСЂС–СЏРј, РїРѕРІРµСЂС‚Р°С”РјРѕ РїРѕРІС–РґРѕРјР»РµРЅРЅСЏ
+    if not filtered_cars:
+        return "РќРµРјР°С” Р°РІС‚РѕРјРѕР±С–Р»С–РІ РІС–РєРѕРј Р±С–Р»СЊС€Рµ 6 СЂРѕРєС–РІ."
+    
+    # Р РѕР·СЂР°С…СѓРЅРѕРє СЃРµСЂРµРґРЅСЊРѕС— РІР°СЂС‚РѕСЃС‚С–
+    total_price = sum(car['price'] for car in filtered_cars)
+    average_price = total_price / len(filtered_cars)
+    
+    return average_price
 
-# Виведення вмісту JSON-файлу
-def display_json(filename):
-    with open(filename, 'r') as file:
-        data = json.load(file)
-        print("\nВміст JSON-файлу:")
-        for entry in data:
-            print(entry)
-
-
-# Обчислення середньої вартості автомобілів, вік яких перевищує 6 років
-def calculate_average_price(filename):
-    with open(filename, 'r') as file:
-        data = json.load(file)
-        older_cars = [car['price'] for car in data if car['age'] > 6]
-
-        if older_cars:
-            average_price = sum(older_cars) / len(older_cars)
-            print(f"\nСередня вартість автомобілів, вік яких перевищує 6 років: {average_price:.2f}")
+while True:
+    print("Select an option:\n1 - Calculate average price of cars older than 6 years\n2 - View car data\n3 - Exit")
+    option = input("Choose an option: ")
+    
+    if option == "1":
+        average_price = calculate_average_price(cars)
+        if isinstance(average_price, str):
+            print(average_price)
         else:
-            print("\nНемає автомобілів, вік яких перевищує 6 років.")
-
-
-# Додавання нового запису
-def add_car(filename, model, price, age):
-    with open(filename, 'r') as file:
-        data = json.load(file)
-
-    data.append({"model": model, "price": price, "age": age})
-
-    with open(filename, 'w') as file:
-        json.dump(data, file, indent=4)
-
-    print(f"\nДодано новий автомобіль: {model}")
-
-
-# Видалення запису
-def remove_car(filename, model):
-    with open(filename, 'r') as file:
-        data = json.load(file)
-
-    data = [car for car in data if car['model'] != model]
-
-    with open(filename, 'w') as file:
-        json.dump(data, file, indent=4)
-
-    print(f"\nАвтомобіль {model} видалено.")
-
-
-# Основна функція запуску програми
-def main():
-    filename = 'cars_data.json'
-
-    while True:
-        print("\nМеню:")
-        print("1. Вивести вміст JSON-файлу")
-        print("2. Додати новий запис")
-        print("3. Видалити запис")
-        print("4. Обчислити середню вартість автомобілів, вік яких перевищує 6 років")
-        print("5. Вийти")
-
-        choice = input("Оберіть дію (1-5): ")
-
-        if choice == '1':
-            display_json(filename)
-        elif choice == '2':
-            model = input("Введіть модель: ")
-            price = float(input("Введіть ціну: "))
-            age = int(input("Введіть вік: "))
-            add_car(filename, model, price, age)
-        elif choice == '3':
-            model = input("Введіть модель для видалення: ")
-            remove_car(filename, model)
-        elif choice == '4':
-            calculate_average_price(filename)
-        elif choice == '5':
-            print("Вихід.")
-            break
-        else:
-            print("Неправильний вибір. Спробуйте ще раз.")
-
-
-if __name__ == "__main__":
-    main()
-
+            print(f"РЎРµСЂРµРґРЅСЏ РІР°СЂС‚С–СЃС‚СЊ Р°РІС‚РѕРјРѕР±С–Р»С–РІ РІС–РєРѕРј Р±С–Р»СЊС€Рµ 6 СЂРѕРєС–РІ: {average_price:.2f} USD")
+    elif option == "2":
+        with open("cars.json", "r", encoding="utf-8") as file:
+            cars_data = json.load(file)
+            print(json.dumps(cars_data, ensure_ascii=False, indent=4))
+    elif option == "3":
+        break
+    else:
+        print("РќРµРІС–СЂРЅРёР№ РІРёР±С–СЂ. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.")
